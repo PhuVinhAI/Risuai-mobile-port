@@ -18,9 +18,7 @@
     import SavePopupIconComp from './lib/Others/SavePopupIcon.svelte';
     import Botpreset from './lib/Setting/botpreset.svelte';
     import ListedPersona from './lib/Setting/listedPersona.svelte';
-    import MobileHeader from './lib/Mobile/MobileHeader.svelte';
-    import MobileBody from './lib/Mobile/MobileBody.svelte';
-    import MobileFooter from './lib/Mobile/MobileFooter.svelte';
+    import MobileAppShell from './lib/MobileApp/MobileAppShell.svelte';
     import CustomGUISettingMenu from './lib/Setting/Pages/CustomGUISettingMenu.svelte';
     import { checkCharOrder } from './ts/globalApi.svelte';
     import { ArrowUpIcon, GlobeIcon, PlusIcon } from '@lucide/svelte';
@@ -196,14 +194,10 @@
         {:else}
             <WelcomeRisu />
         {/if}
+    {:else if $MobileGUI || isMobile}
+        <MobileAppShell />
     {:else if $settingsOpen}
         <Settings />
-    {:else if $MobileGUI}
-        <div class="w-full h-full flex flex-col">
-            <MobileHeader />
-            <MobileBody />
-            <MobileFooter />
-        </div>
     {:else}
         {#if gridOpen}
             <GridChars endGrid={() => {gridOpen = false}} />
