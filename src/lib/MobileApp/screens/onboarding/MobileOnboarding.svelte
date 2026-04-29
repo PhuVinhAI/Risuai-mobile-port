@@ -77,7 +77,9 @@
 
     function selectProvider(p: string) {
         provider = p;
-        if (p === "horde" || p === "later") {
+        if (p === "horde") {
+            goTo(5);
+        } else if (p === "later") {
             goTo(10);
         } else {
             goTo(4);
@@ -159,9 +161,9 @@
 
 <div class="fixed inset-0 w-full h-full bg-bgcolor text-textcolor flex flex-col font-[system-ui]">
     <!-- Header -->
-    <div class="shrink-0 flex items-center gap-3 px-4 py-3 border-b border-darkborderc bg-darkbg" style="padding-top: calc(env(safe-area-inset-top, 8px) + 12px);">
+    <div class="shrink-0 flex items-center gap-3 px-4 py-2.5 bg-darkbg z-10" style="padding-top: calc(env(safe-area-inset-top, 8px) + 8px);">
         {#if stepHistory.length > 0 && step !== 10}
-            <button class="shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-150 active:scale-90 active:bg-selected" onclick={goBack}>
+            <button class="shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 active:scale-85 active:opacity-50" onclick={goBack}>
                 <ChevronLeft size={22} />
             </button>
         {/if}
@@ -169,23 +171,23 @@
             <img src={Airisu} alt="Airisu" class="w-full h-full object-cover" />
         </div>
         <div class="flex-1 min-w-0">
-            <div class="text-base font-semibold truncate">Airisu</div>
-            <div class="text-xs text-textcolor2">RisuAI Assistant</div>
+            <div class="text-[15px] font-bold truncate">Airisu</div>
+            <div class="text-[11px] text-textcolor2/50">RisuAI Assistant</div>
         </div>
     </div>
 
     <!-- Chat area -->
-    <div class="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3" bind:this={chatContainer}>
+    <div class="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3 ob-chat-area" bind:this={chatContainer}>
 
         <!-- Step 0: Language selection -->
         {#if step === 0}
-            <div class="ob-bubble-bot animate-ob-msg">
+            <div class="max-w-[85%] px-[18px] py-3.5 rounded-[20px] rounded-bl-[6px] bg-darkbg text-sm leading-relaxed self-start animate-ob-msg">
                 <span class="font-medium">Choose your language</span>
             </div>
             <div class="flex flex-wrap gap-2 animate-ob-msg-delay">
                 {#each languages as lang}
                     <button
-                        class="px-4 py-2.5 rounded-2xl bg-darkbg border border-darkborderc text-sm font-medium text-textcolor transition-all duration-150 active:scale-95 active:bg-selected"
+                        class="px-4 py-2.5 rounded-2xl bg-darkbg text-sm font-medium text-textcolor transition-all duration-150 active:scale-95 active:opacity-80"
                         onclick={() => { changeLanguage(lang.code); DBState.db.language = lang.code; goTo(1); }}
                     >
                         {lang.label}
@@ -196,7 +198,7 @@
 
         <!-- Step 1+: Welcome -->
         {#if step >= 1}
-            <div class="ob-bubble-bot animate-ob-msg">
+            <div class="max-w-[85%] px-[18px] py-3.5 rounded-[20px] rounded-bl-[6px] bg-darkbg text-sm leading-relaxed self-start animate-ob-msg">
                 {language.setup.welcome}
             </div>
         {/if}
@@ -205,10 +207,10 @@
 
         <!-- Step 2+: Username echo + setup choice -->
         {#if step >= 2}
-            <div class="ob-bubble-user animate-ob-msg">
+            <div class="max-w-[75%] px-[18px] py-3.5 rounded-[20px] rounded-br-[6px] bg-borderc text-white text-sm leading-relaxed self-end animate-ob-msg">
                 {DBState.db.username}
             </div>
-            <div class="ob-bubble-bot animate-ob-msg">
+            <div class="max-w-[85%] px-[18px] py-3.5 rounded-[20px] rounded-bl-[6px] bg-darkbg text-sm leading-relaxed self-start animate-ob-msg">
                 {language.setup.setupLaterMessage.replace("{username}", DBState.db.username)}
             </div>
         {/if}
@@ -216,14 +218,14 @@
         {#if step === 2}
             <div class="flex flex-col gap-2 animate-ob-msg-delay">
                 <button
-                    class="ob-option-card border-l-4 border-l-blue-500"
+                    class="w-full px-[18px] py-4 rounded-2xl bg-darkbg text-left text-textcolor cursor-pointer transition-all duration-200 active:scale-[0.97] active:opacity-80"
                     onclick={() => { goTo(3); scrollToBottom(); }}
                 >
                     <div class="font-semibold text-[15px]">{language.setup.setupMessageOption1}</div>
                     <div class="text-xs text-textcolor2 mt-0.5">{language.setup.setupMessageOption1Desc}</div>
                 </button>
                 <button
-                    class="ob-option-card border-l-4 border-l-gray-500"
+                    class="w-full px-[18px] py-4 rounded-2xl bg-darkbg text-left text-textcolor cursor-pointer transition-all duration-200 active:scale-[0.97] active:opacity-80"
                     onclick={() => { provider = "later"; goTo(10); }}
                 >
                     <div class="font-medium text-sm text-textcolor2">{language.setup.setupMessageOption2}</div>
@@ -233,29 +235,29 @@
 
         <!-- Step 3+: Provider selection -->
         {#if step === 3 || (step > 3 && stepHistory.includes(3))}
-            <div class="ob-bubble-user animate-ob-msg">
+            <div class="max-w-[75%] px-[18px] py-3.5 rounded-[20px] rounded-br-[6px] bg-borderc text-white text-sm leading-relaxed self-end animate-ob-msg">
                 {language.setup.setupMessageOption1}
             </div>
-            <div class="ob-bubble-bot animate-ob-msg">
+            <div class="max-w-[85%] px-[18px] py-3.5 rounded-[20px] rounded-bl-[6px] bg-darkbg text-sm leading-relaxed self-start animate-ob-msg">
                 {language.setup.welcome2.replace("{username}", DBState.db.username)}
             </div>
         {/if}
 
         {#if step === 3}
             <div class="flex flex-col gap-2 animate-ob-msg-delay">
-                <button class="ob-option-card border-l-4 border-l-amber-500" onclick={() => selectProvider("claude")}>
-                    <div class="font-semibold text-[15px]">Claude <span class="inline-block text-[10px] font-semibold px-1.5 py-0.5 rounded bg-blue-500 text-white uppercase ml-1">{language.recommended}</span></div>
+                <button class="w-full px-[18px] py-4 rounded-2xl bg-darkbg text-left text-textcolor cursor-pointer transition-all duration-200 active:scale-[0.97] active:opacity-80" onclick={() => selectProvider("claude")}>
+                    <div class="flex items-center gap-2 font-semibold text-[15px]">Claude <span class="text-[10px] font-medium px-2 py-0.5 rounded-full bg-borderc/15 text-borderc">{language.recommended}</span></div>
                     <div class="text-xs text-textcolor2 mt-0.5">{language.setup.claudeDesc}</div>
                 </button>
-                <button class="ob-option-card border-l-4 border-l-blue-500" onclick={() => selectProvider("openai")}>
+                <button class="w-full px-[18px] py-4 rounded-2xl bg-darkbg text-left text-textcolor cursor-pointer transition-all duration-200 active:scale-[0.97] active:opacity-80" onclick={() => selectProvider("openai")}>
                     <div class="font-semibold text-[15px]">OpenAI</div>
                     <div class="text-xs text-textcolor2 mt-0.5">{language.setup.openAIDesc}</div>
                 </button>
-                <button class="ob-option-card border-l-4 border-l-red-500" onclick={() => selectProvider("horde")}>
+                <button class="w-full px-[18px] py-4 rounded-2xl bg-darkbg text-left text-textcolor cursor-pointer transition-all duration-200 active:scale-[0.97] active:opacity-80" onclick={() => selectProvider("horde")}>
                     <div class="font-semibold text-[15px]">Horde</div>
                     <div class="text-xs text-textcolor2 mt-0.5">{language.setup.hordeProvider}</div>
                 </button>
-                <button class="ob-option-card border-l-4 border-l-green-500" onclick={() => selectProvider("openrouter")}>
+                <button class="w-full px-[18px] py-4 rounded-2xl bg-darkbg text-left text-textcolor cursor-pointer transition-all duration-200 active:scale-[0.97] active:opacity-80" onclick={() => selectProvider("openrouter")}>
                     <div class="font-semibold text-[15px]">OpenRouter</div>
                     <div class="text-xs text-textcolor2 mt-0.5">{language.setup.openRouterProvider}</div>
                 </button>
@@ -264,8 +266,8 @@
 
         <!-- Step 4+: API Key -->
         {#if step === 4 || (step > 4 && stepHistory.includes(4))}
-            <div class="ob-bubble-user animate-ob-msg">{provider}</div>
-            <div class="ob-bubble-bot animate-ob-msg whitespace-pre-line">
+            <div class="max-w-[75%] px-[18px] py-3.5 rounded-[20px] rounded-br-[6px] bg-borderc text-white text-sm leading-relaxed self-end animate-ob-msg">{provider}</div>
+            <div class="max-w-[85%] px-[18px] py-3.5 rounded-[20px] rounded-bl-[6px] bg-darkbg text-sm leading-relaxed self-start animate-ob-msg whitespace-pre-line">
                 {#if provider === "openai"}
                     {language.setup.setupOpenAI}
                 {:else if provider === "openrouter"}
@@ -293,22 +295,22 @@
 
         <!-- Step 5+: Chat language -->
         {#if step === 5 || (step > 5 && stepHistory.includes(5))}
-            <div class="ob-bubble-bot animate-ob-msg">
+            <div class="max-w-[85%] px-[18px] py-3.5 rounded-[20px] rounded-bl-[6px] bg-darkbg text-sm leading-relaxed self-start animate-ob-msg">
                 {language.setup.chooseChatType}
             </div>
         {/if}
 
         {#if step === 5}
             <div class="flex flex-col gap-2 animate-ob-msg-delay">
-                <button class="ob-option-card border-l-4 border-l-blue-500" onclick={() => selectChatLang(0)}>
+                <button class="w-full px-[18px] py-4 rounded-2xl bg-darkbg text-left text-textcolor cursor-pointer transition-all duration-200 active:scale-[0.97] active:opacity-80" onclick={() => selectChatLang(0)}>
                     <div class="font-semibold text-[15px]">{language.setup.chooseChatTypeOption1}</div>
                     <div class="text-xs text-textcolor2 mt-0.5">{language.setup.chooseChatTypeOption1Desc}</div>
                 </button>
-                <button class="ob-option-card border-l-4 border-l-green-500" onclick={() => selectChatLang(1)}>
+                <button class="w-full px-[18px] py-4 rounded-2xl bg-darkbg text-left text-textcolor cursor-pointer transition-all duration-200 active:scale-[0.97] active:opacity-80" onclick={() => selectChatLang(1)}>
                     <div class="font-semibold text-[15px]">{language.setup.chooseChatTypeOption2}</div>
                     <div class="text-xs text-textcolor2 mt-0.5">{language.setup.chooseChatTypeOption2Desc}</div>
                 </button>
-                <button class="ob-option-card border-l-4 border-l-red-500" onclick={() => selectChatLang(2)}>
+                <button class="w-full px-[18px] py-4 rounded-2xl bg-darkbg text-left text-textcolor cursor-pointer transition-all duration-200 active:scale-[0.97] active:opacity-80" onclick={() => selectChatLang(2)}>
                     <div class="font-semibold text-[15px]">{language.setup.chooseChatTypeOption3}</div>
                     <div class="text-xs text-textcolor2 mt-0.5">{language.setup.chooseChatTypeOption3Desc}</div>
                 </button>
@@ -317,29 +319,29 @@
 
         <!-- Step 6+: Memory -->
         {#if step === 6 || (step > 6 && stepHistory.includes(6))}
-            <div class="ob-bubble-user animate-ob-msg">
+            <div class="max-w-[75%] px-[18px] py-3.5 rounded-[20px] rounded-br-[6px] bg-borderc text-white text-sm leading-relaxed self-end animate-ob-msg">
                 {language.setup[`chooseChatTypeOption${chatLang + 1}`]}
             </div>
-            <div class="ob-bubble-bot animate-ob-msg">
+            <div class="max-w-[85%] px-[18px] py-3.5 rounded-[20px] rounded-bl-[6px] bg-darkbg text-sm leading-relaxed self-start animate-ob-msg">
                 {language.setup.chooseCheapOrMemory}
             </div>
         {/if}
 
         {#if step === 6}
             <div class="flex flex-col gap-2 animate-ob-msg-delay">
-                <button class="ob-option-card border-l-4 border-l-red-500" onclick={() => selectMemory(2)}>
-                    <div class="font-semibold text-[15px]">{language.setup.chooseCheapOrMemoryOption3} <span class="inline-block text-[10px] font-semibold px-1.5 py-0.5 rounded bg-blue-500 text-white uppercase ml-1">{language.recommended}</span></div>
+                <button class="w-full px-[18px] py-4 rounded-2xl bg-darkbg text-left text-textcolor cursor-pointer transition-all duration-200 active:scale-[0.97] active:opacity-80" onclick={() => selectMemory(2)}>
+                    <div class="flex items-center gap-2 font-semibold text-[15px]">{language.setup.chooseCheapOrMemoryOption3} <span class="text-[10px] font-medium px-2 py-0.5 rounded-full bg-borderc/15 text-borderc">{language.recommended}</span></div>
                     <div class="text-xs text-textcolor2 mt-0.5">{language.setup.chooseCheapOrMemoryOption3Desc}</div>
                 </button>
-                <button class="ob-option-card border-l-4 border-l-blue-500" onclick={() => selectMemory(0)}>
+                <button class="w-full px-[18px] py-4 rounded-2xl bg-darkbg text-left text-textcolor cursor-pointer transition-all duration-200 active:scale-[0.97] active:opacity-80" onclick={() => selectMemory(0)}>
                     <div class="font-semibold text-[15px]">{language.setup.chooseCheapOrMemoryOption1}</div>
                     <div class="text-xs text-textcolor2 mt-0.5">{language.setup.chooseCheapOrMemoryOption1Desc}</div>
                 </button>
-                <button class="ob-option-card border-l-4 border-l-green-500" onclick={() => selectMemory(1)}>
+                <button class="w-full px-[18px] py-4 rounded-2xl bg-darkbg text-left text-textcolor cursor-pointer transition-all duration-200 active:scale-[0.97] active:opacity-80" onclick={() => selectMemory(1)}>
                     <div class="font-semibold text-[15px]">{language.setup.chooseCheapOrMemoryOption2}</div>
                     <div class="text-xs text-textcolor2 mt-0.5">{language.setup.chooseCheapOrMemoryOption2Desc}</div>
                 </button>
-                <button class="ob-option-card border-l-4 border-l-yellow-500" onclick={() => selectMemory(3)}>
+                <button class="w-full px-[18px] py-4 rounded-2xl bg-darkbg text-left text-textcolor cursor-pointer transition-all duration-200 active:scale-[0.97] active:opacity-80" onclick={() => selectMemory(3)}>
                     <div class="font-semibold text-[15px]">{language.setup.chooseCheapOrMemoryOption4}</div>
                     <div class="text-xs text-textcolor2 mt-0.5">{language.setup.chooseCheapOrMemoryOption4Desc}</div>
                 </button>
@@ -348,7 +350,7 @@
 
         <!-- Step 10: Done -->
         {#if step === 10}
-            <div class="ob-bubble-bot animate-ob-msg">
+            <div class="max-w-[85%] px-[18px] py-3.5 rounded-[20px] rounded-bl-[6px] bg-darkbg text-sm leading-relaxed self-start animate-ob-msg">
                 {language.setup.allDone}
             </div>
             <div class="flex justify-center py-4 animate-ob-msg-delay">
@@ -359,73 +361,44 @@
 
     <!-- Input area -->
     {#if step !== 10 && step !== 0}
-        <div class="shrink-0 flex items-end gap-2 px-3 py-3 border-t border-darkborderc bg-darkbg" style="padding-bottom: calc(env(safe-area-inset-bottom, 8px) + 8px);">
-            <textarea
-                class="flex-1 min-w-0 px-4 py-3 rounded-3xl bg-bgcolor border border-darkborderc text-textcolor text-[15px] outline-none resize-none overflow-y-hidden max-h-[120px] leading-snug placeholder:text-textcolor2/50 focus:border-borderc transition-colors duration-200"
-                bind:value={input}
-                placeholder={step === 1 ? language.setup.inputName?.replace("Lastly, i", "I")?.replace("Cuối cùng, n", "N") || "Enter your name" : step === 4 ? "sk-..." : "..."}
-                rows="1"
-                onkeydown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
-                        e.preventDefault();
-                        send();
-                    }
-                }}
-                oninput={(e) => {
-                    const el = e.currentTarget;
-                    el.style.height = "auto";
-                    el.style.height = Math.min(el.scrollHeight, 120) + "px";
-                }}
-                style="height:44px"
-            ></textarea>
-            <button
-                class="shrink-0 w-11 h-11 rounded-full bg-borderc text-white flex items-center justify-center transition-all duration-150 active:scale-90 disabled:opacity-40 disabled:pointer-events-none"
-                onclick={send}
-                disabled={input.length === 0}
-            >
-                <Send size={18} />
-            </button>
+        <div class="shrink-0 animate-ob-msg" style="padding-bottom: env(safe-area-inset-bottom, 0px);">
+            <div class="relative rounded-t-[28px] bg-darkbg ring-1 ring-darkborderc">
+                <textarea
+                    class="w-full pl-5 pr-14 py-4 bg-transparent text-textcolor text-[15px] outline-none resize-none overflow-y-hidden max-h-[140px] leading-normal placeholder:text-textcolor2/30"
+                    bind:value={input}
+                    placeholder={step === 1 ? language.setup.inputName?.replace("Lastly, i", "I")?.replace("Cuối cùng, n", "N") || "Enter your name" : step === 4 ? "sk-..." : "..."}
+                    rows="1"
+                    onkeydown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+                            e.preventDefault();
+                            send();
+                        }
+                    }}
+                    oninput={(e) => {
+                        const el = e.currentTarget;
+                        el.style.height = "auto";
+                        el.style.height = Math.min(el.scrollHeight, 140) + "px";
+                    }}
+                ></textarea>
+                <button
+                    class="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-borderc text-white flex items-center justify-center transition-all duration-300 active:scale-90 disabled:opacity-20 disabled:pointer-events-none"
+                    onclick={send}
+                    disabled={input.length === 0}
+                >
+                    <Send size={17} />
+                </button>
+            </div>
         </div>
     {/if}
 </div>
 
 <style>
-    .ob-bubble-bot {
-        max-width: 85%;
-        padding: 12px 16px;
-        border-radius: 20px 20px 20px 4px;
-        background: var(--risu-theme-darkbg);
-        border: 1px solid var(--risu-theme-darkborderc);
-        font-size: 14px;
-        line-height: 1.5;
-        align-self: flex-start;
+    .ob-chat-area {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
     }
-
-    .ob-bubble-user {
-        max-width: 75%;
-        padding: 12px 16px;
-        border-radius: 20px 20px 4px 20px;
-        background: var(--risu-theme-borderc);
-        color: #fff;
-        font-size: 14px;
-        line-height: 1.5;
-        align-self: flex-end;
-    }
-
-    .ob-option-card {
-        width: 100%;
-        padding: 14px 16px;
-        border-radius: 14px;
-        background: var(--risu-theme-darkbg);
-        border: 1px solid var(--risu-theme-darkborderc);
-        text-align: left;
-        color: var(--risu-theme-textcolor);
-        cursor: pointer;
-        transition: all 0.15s;
-    }
-    .ob-option-card:active {
-        transform: scale(0.98);
-        background: var(--risu-theme-selected);
+    .ob-chat-area::-webkit-scrollbar {
+        display: none;
     }
 
     .animate-ob-msg {
